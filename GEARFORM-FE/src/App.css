@@ -1,0 +1,56 @@
+
+:root {
+    --bg: #080a0f;
+    --surface: #0d1117;
+    --accent: #00ffcc;
+    --accent2: #ff3d6e;
+    --accent3: #7b5ef8;
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --card: #10141c;
+  }
+
+  body {
+  margin: 0;
+
+}
+
+
+.app {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Vídeo de fundo */
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Conteúdo acima do vídeo */
+.content {
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-align: center;
+  margin-top: 200px;
+}
+
+.app::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}

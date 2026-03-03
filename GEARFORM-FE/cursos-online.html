@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS · Aprenda o Futuro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080a0f;
+    --surface: #0d1117;
+    --accent: #00ffcc;
+    --accent2: #ff3d6e;
+    --accent3: #7b5ef8;
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --card: #10141c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid rgba(0,255,204,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.25s ease;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,10,15,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    position: relative;
+  }
+  .logo span {
+    color: var(--accent2);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .nav-btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,94,248,0.15) 0%, transparent 70%);
+    top: 50%;
+    right: -100px;
+    transform: translateY(-50%);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,204,0.08) 0%, transparent 70%);
+    bottom: -100px;
+    left: 100px;
+    animation: pulse 8s ease-in-out infinite reverse;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+    50% { transform: translateY(-50%) scale(1.15); opacity: 1; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,255,204,0.07);
+    border: 1px solid rgba(0,255,204,0.2);
+    padding: 8px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    animation: fadeSlideUp 0.8s ease both;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 140px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { display: block; color: var(--text); }
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .line3 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+  }
+
+  .hero p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    animation: fadeSlideUp 0.8s 0.2s ease both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    transition: all 0.3s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.2) 50%);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(0,255,204,0.4); }
+
+  .btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+    text-transform: uppercase;
+  }
+  .btn-ghost .play-icon {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-ghost:hover .play-icon { border-color: var(--text); transform: scale(1.1); }
+
+  /* STATS */
+  .stats-bar {
+    background: var(--card);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .stat {
+    text-align: center;
+    position: relative;
+  }
+  .stat + .stat::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    padding: 30px 0;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 60px;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    white-space: nowrap;
+  }
+  .marquee-item span {
+    color: var(--accent2);
+    font-size: 16px;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* COURSES */
+  .section {
+    padding: 100px 60px;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 60px;
+  }
+
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .course-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .course-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,204,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 1;
+  }
+  .course-card:hover {
+    border-color: rgba(0,255,204,0.3);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,255,204,0.1);
+  }
+  .course-card:hover::before { opacity: 1; }
+
+  .card-thumb {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-thumb-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    position: relative;
+  }
+  .card-thumb-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, var(--card));
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--accent2);
+    color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  .card-body {
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-category {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .card-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+  }
+  .card-price small {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stars { color: #ffd700; }
+
+  /* FLOATING ORBS */
+  .orbs-section {
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .orbs-visual {
+    position: relative;
+    height: 500px;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    animation: float 6s ease-in-out infinite;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .orb:hover { transform: scale(1.1) !important; animation-play-state: paused; }
+
+  .orb-1 { width: 180px; height: 180px; top: 50px; left: 60px; animation-delay: 0s; border-color: rgba(0,255,204,0.3); color: var(--accent); }
+  .orb-2 { width: 140px; height: 140px; top: 30px; right: 80px; animation-delay: 1.5s; border-color: rgba(255,61,110,0.3); color: var(--accent2); }
+  .orb-3 { width: 200px; height: 200px; bottom: 80px; left: 30px; animation-delay: 3s; border-color: rgba(123,94,248,0.3); color: var(--accent3); }
+  .orb-4 { width: 120px; height: 120px; bottom: 60px; right: 60px; animation-delay: 0.8s; border-color: rgba(0,255,204,0.2); color: var(--accent); }
+  .orb-5 { width: 90px; height: 90px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 2s; border-color: rgba(255,61,110,0.2); color: var(--accent2); }
+
+  .orb-connector {
+    position: absolute;
+    background: rgba(0,255,204,0.1);
+    transform-origin: left center;
+    height: 1px;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-20px) rotate(2deg); }
+    66% { transform: translateY(10px) rotate(-1deg); }
+  }
+
+  .features-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.05);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    transition: all 0.3s;
+  }
+  .feature-item:hover {
+    border-color: rgba(0,255,204,0.2);
+    background: rgba(0,255,204,0.03);
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(0,255,204,0.1);
+    border: 1px solid rgba(0,255,204,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .feature-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-size: 15px;
+  }
+  .feature-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    padding: 100px 60px;
+    background: var(--card);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .testimonial {
+    padding: 32px;
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    transition: all 0.4s;
+    background: var(--bg);
+  }
+  .testimonial:hover {
+    border-color: rgba(123,94,248,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .quote-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(0,255,204,0.1);
+    line-height: 0.8;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .testimonial p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .author-role {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,94,248,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8vw, 120px);
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .cta-section h2 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+  }
+  .cta-section h2 .filled {
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: 48px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 300;
+  }
+
+  /* EMAIL FORM */
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .email-input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-right: none;
+    color: var(--text);
+    padding: 18px 24px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .email-input:focus { border-color: var(--accent); }
+  .email-input::placeholder { color: var(--muted); }
+
+  .email-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 18px 30px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .email-btn:hover {
+    background: #00e6b8;
+    box-shadow: 0 0 30px rgba(0,255,204,0.4);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--muted);
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ANIMATED COUNTER */
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: fadeSlideUp 1s 0.6s ease both;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollDown {
+    0% { top: -100%; }
+    100% { top: 200%; }
+  }
+
+  .scroll-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* PROGRESS BARS in cards */
+  .progress-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.05);
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), var(--accent3));
+    width: 0%;
+    transition: width 1.5s ease;
+  }
+
+  /* GLOW LINES */
+  .glow-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    opacity: 0.3;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* CARD hover glow */
+  .course-card:hover .progress-fill {
+    width: attr(data-progress);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    nav { padding: 20px 30px; }
+    .hero, .section, .orbs-section, .testimonials, .cta-section, footer { padding-left: 30px; padding-right: 30px; }
+    .stats-bar { padding: 30px; }
+    .courses-grid { grid-template-columns: 1fr 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr 1fr; }
+    .orbs-section { grid-template-columns: 1fr; }
+    .orbs-visual { height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">NEX<span>U</span>S</div>
+  <ul class="nav-links">
+    <li><a href="#">Cursos</a></li>
+    <li><a href="#">Trilhas</a></li>
+    <li><a href="#">Instrutores</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+  <button class="nav-btn">ENTRAR</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  
+  <div class="glow-line" style="width: 60%; top: 30%; left: 20%;"></div>
+  <div class="glow-line" style="width: 40%; top: 70%; left: 40%; animation-delay: 1.5s;"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">★ PLATAFORMA EDUCACIONAL DO FUTURO</div>
+    <h1>
+      <span class="line1">DOMINE</span>
+      <span class="line2">HABILIDADES</span>
+      <span class="line3">DIGITAIS</span>
+    </h1>
+    <p>Cursos intensivos com instrutores de elite. Aprenda na velocidade do mercado. Construa o portfólio que vai mudar sua carreira.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">EXPLORAR CURSOS</button>
+      <button class="btn-ghost">
+        <div class="play-icon">▶</div>
+        <span>Ver Demo</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <div class="scroll-text">scroll</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat">
+    <span class="stat-num" data-target="47000">0</span>
+    <span class="stat-label">Alunos Ativos</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" data-target="340">0</span>
+    <span class="stat-label">Cursos Premium</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" data-target="98">0</span>
+    <span class="stat-label">% Satisfação</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" data-target="120">0</span>
+    <span class="stat-label">Instrutores</span>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item">DESENVOLVIMENTO WEB <span>✦</span></div>
+    <div class="marquee-item">INTELIGÊNCIA ARTIFICIAL <span>✦</span></div>
+    <div class="marquee-item">DESIGN DE PRODUTO <span>✦</span></div>
+    <div class="marquee-item">CLOUD COMPUTING <span>✦</span></div>
+    <div class="marquee-item">CYBERSEGURANÇA <span>✦</span></div>
+    <div class="marquee-item">DATA SCIENCE <span>✦</span></div>
+    <div class="marquee-item">BLOCKCHAIN <span>✦</span></div>
+    <div class="marquee-item">MOBILE DEV <span>✦</span></div>
+    <div class="marquee-item">DESENVOLVIMENTO WEB <span>✦</span></div>
+    <div class="marquee-item">INTELIGÊNCIA ARTIFICIAL <span>✦</span></div>
+    <div class="marquee-item">DESIGN DE PRODUTO <span>✦</span></div>
+    <div class="marquee-item">CLOUD COMPUTING <span>✦</span></div>
+    <div class="marquee-item">CYBERSEGURANÇA <span>✦</span></div>
+    <div class="marquee-item">DATA SCIENCE <span>✦</span></div>
+    <div class="marquee-item">BLOCKCHAIN <span>✦</span></div>
+    <div class="marquee-item">MOBILE DEV <span>✦</span></div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<section class="section">
+  <div class="section-label">Cursos em Destaque</div>
+  <h2 class="section-title reveal">TRILHAS<br><span style="color: var(--accent)">PREMIUM</span></h2>
+
+  <div class="courses-grid">
+    <!-- Card 1 -->
+    <div class="course-card reveal" style="transition-delay: 0.1s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #1a0a30)">
+          <span style="position:relative;z-index:1">🤖</span>
+        </div>
+        <span class="card-badge">MAIS VENDIDO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Inteligência Artificial</div>
+        <div class="card-title">Machine Learning do Zero ao Deploy</div>
+        <div class="card-desc">Domine os algoritmos que estão transformando a indústria. Python, TensorFlow, deploy em produção.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 87%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 297</div>
+          <div class="card-meta">
+            <span class="stars">★★★★★</span>
+            <span>4.9 · 2.3k reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="course-card reveal" style="transition-delay: 0.2s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #0a2010)">
+          <span style="position:relative;z-index:1">💻</span>
+        </div>
+        <span class="card-badge" style="background: var(--accent3)">NOVO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Full Stack</div>
+        <div class="card-title">React + Node.js Avançado 2025</div>
+        <div class="card-desc">Arquitetura moderna, performance extrema e boas práticas que as empresas cobram em entrevistas.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 72%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 197</div>
+          <div class="card-meta">
+            <span class="stars">★★★★★</span>
+            <span>4.8 · 1.8k reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="course-card reveal" style="transition-delay: 0.3s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #200a10)">
+          <span style="position:relative;z-index:1">🎨</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Design & UX</div>
+        <div class="card-title">UI/UX Design para Produtos Digitais</div>
+        <div class="card-desc">Figma, pesquisa com usuários, protótipos que convertem. Portfólio profissional incluso.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 247</div>
+          <div class="card-meta">
+            <span class="stars">★★★★☆</span>
+            <span>4.7 · 987 reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="course-card reveal" style="transition-delay: 0.4s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #0a1520)">
+          <span style="position:relative;z-index:1">☁️</span>
+        </div>
+        <span class="card-badge" style="background: #0080ff">CERTIFICADO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Cloud & DevOps</div>
+        <div class="card-title">AWS + DevOps na Prática</div>
+        <div class="card-desc">Docker, Kubernetes, CI/CD, monitoramento. Prepare-se para a certificação AWS.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 54%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 347</div>
+          <div class="card-meta">
+            <span class="stars">★★★★★</span>
+            <span>4.9 · 3.1k reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="course-card reveal" style="transition-delay: 0.5s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #1a1500)">
+          <span style="position:relative;z-index:1">📊</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Data Science</div>
+        <div class="card-title">Python para Análise de Dados</div>
+        <div class="card-desc">Pandas, NumPy, visualizações profissionais e storytelling com dados reais de mercado.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 79%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 227</div>
+          <div class="card-meta">
+            <span class="stars">★★★★★</span>
+            <span>4.8 · 2.7k reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="course-card reveal" style="transition-delay: 0.6s">
+      <div class="card-thumb">
+        <div class="card-thumb-bg" style="background: linear-gradient(135deg, #0d1117, #100a20)">
+          <span style="position:relative;z-index:1">🔐</span>
+        </div>
+        <span class="card-badge" style="background: #ff6600">LIMITADO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Cybersecurity</div>
+        <div class="card-title">Hacking Ético & Pentest</div>
+        <div class="card-desc">Aprenda a pensar como um hacker para defender sistemas. Labs práticos incluídos.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 91%"></div></div>
+        <div class="card-footer">
+          <div class="card-price"><small>por apenas</small>R$ 397</div>
+          <div class="card-meta">
+            <span class="stars">★★★★★</span>
+            <span>4.9 · 1.4k reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY NEXUS -->
+<section class="orbs-section">
+  <div class="orbs-visual reveal">
+    <div class="orb orb-1">AI</div>
+    <div class="orb orb-2">CODE</div>
+    <div class="orb orb-3">DESIGN</div>
+    <div class="orb orb-4">DATA</div>
+    <div class="orb orb-5">DEV</div>
+    <!-- SVG connections -->
+    <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" opacity="0.15">
+      <line x1="150" y1="140" x2="270" y2="100" stroke="#00ffcc" stroke-width="1"/>
+      <line x1="150" y1="140" x2="130" y2="300" stroke="#00ffcc" stroke-width="1"/>
+      <line x1="270" y1="100" x2="360" y2="200" stroke="#7b5ef8" stroke-width="1"/>
+      <line x1="130" y1="300" x2="360" y2="200" stroke="#ff3d6e" stroke-width="1"/>
+      <line x1="360" y1="200" x2="270" y2="380" stroke="#00ffcc" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="reveal">
+    <div class="section-label">Por que a NEXUS</div>
+    <h2 class="section-title" style="margin-bottom: 40px">A<br><span style="color: var(--accent)">DIFERENÇA</span></h2>
+    <ul class="features-list">
+      <li class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div>
+          <div class="feature-title">Aprenda 3x mais rápido</div>
+          <div class="feature-text">Metodologia baseada em projetos reais. Sem teoria desnecessária, direto ao ponto que o mercado exige.</div>
+        </div>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">🎯</div>
+        <div>
+          <div class="feature-title">Mentoria 1:1 com especialistas</div>
+          <div class="feature-text">Sessões ao vivo com profissionais que trabalham nas maiores empresas de tech do mundo.</div>
+        </div>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">🏆</div>
+        <div>
+          <div class="feature-title">Certificados reconhecidos</div>
+          <div class="feature-text">Parceria com mais de 200 empresas que contratam diretamente da nossa plataforma.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">Depoimentos</div>
+  <h2 class="section-title reveal">O QUE DIZEM<br><span style="color: var(--accent3)">NOSSOS ALUNOS</span></h2>
+
+  <div class="testimonials-grid">
+    <div class="testimonial reveal" style="transition-delay:0.1s">
+      <span class="quote-mark">"</span>
+      <p>Em 4 meses na NEXUS aprendi mais do que em 2 anos de faculdade. Consegui meu primeiro emprego como dev antes de terminar o curso.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">RM</div>
+        <div>
+          <div class="author-name">Rafael Mendes</div>
+          <div class="author-role">Dev Frontend · Google</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal" style="transition-delay:0.2s">
+      <span class="quote-mark">"</span>
+      <p>A qualidade dos projetos práticos é absurda. Meu portfólio ficou tão forte que recebi 3 ofertas de emprego na mesma semana.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background: linear-gradient(135deg, #00ffcc, #7b5ef8)">CL</div>
+        <div>
+          <div class="author-name">Camila Lima</div>
+          <div class="author-role">Data Scientist · Nubank</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal" style="transition-delay:0.3s">
+      <span class="quote-mark">"</span>
+      <p>Saí de analista para engenheiro de ML em 6 meses. O ROI dos cursos da NEXUS é incomparável. Triplicou meu salário.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background: linear-gradient(135deg, #ff3d6e, #7b5ef8)">TS</div>
+        <div>
+          <div class="author-name">Thiago Santos</div>
+          <div class="author-role">ML Engineer · iFood</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="reveal">
+    <span class="outline">COMECE</span><br>
+    <span class="filled">HOJE</span>
+  </h2>
+  <p class="reveal">Junte-se a 47 mil profissionais que já transformaram suas carreiras com a NEXUS.</p>
+  <div class="email-form reveal">
+    <input type="email" class="email-input" placeholder="seu@email.com">
+    <button class="email-btn">COMEÇAR →</button>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:16px;font-family:'Space Mono',monospace;letter-spacing:1px;" class="reveal">7 dias grátis · Sem cartão · Cancele quando quiser</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NEXUS</div>
+  <div class="footer-copy">© 2025 NEXUS · Todos os direitos reservados</div>
+</footer>
+
+<script>
+// CUSTOM CURSOR
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX - 6 + 'px';
+  cursor.style.top = mouseY - 6 + 'px';
+});
+
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX - 20 + 'px';
+  cursorRing.style.top = ringY - 20 + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+document.querySelectorAll('button, a, .course-card, .orb').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'scale(2)';
+    cursorRing.style.transform = 'scale(1.5)';
+    cursorRing.style.borderColor = 'rgba(0,255,204,0.7)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'scale(1)';
+    cursorRing.style.transform = 'scale(1)';
+    cursorRing.style.borderColor = 'rgba(0,255,204,0.4)';
+  });
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Counter animation
+      const nums = entry.target.querySelectorAll('[data-target]');
+      nums.forEach(num => {
+        const target = parseInt(num.dataset.target);
+        let start = 0;
+        const duration = 2000;
+        const step = timestamp => {
+          if (!start) start = timestamp;
+          const progress = Math.min((timestamp - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          num.textContent = Math.floor(eased * target).toLocaleString('pt-BR');
+          if (progress < 1) requestAnimationFrame(step);
+          else {
+            num.textContent = target.toLocaleString('pt-BR');
+            if (num.closest('.stat-num')?.parentElement.querySelector('.stat-label')?.textContent.includes('%')) {
+              num.textContent = target + '%';
+            }
+          }
+        };
+        requestAnimationFrame(step);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Fix % stat
+document.querySelectorAll('.stat').forEach(stat => {
+  const label = stat.querySelector('.stat-label').textContent;
+  if (label.includes('%')) {
+    const num = stat.querySelector('[data-target]');
+    if (num) num.dataset.suffix = '%';
+  }
+});
+
+// PARALLAX HERO
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  document.querySelector('.hero-glow').style.transform = `translateY(calc(-50% + ${y}px)) translateX(${x}px)`;
+  document.querySelector('.hero-glow2').style.transform = `translateY(${-y}px) translateX(${-x}px)`;
+});
+
+// DUPLICATE MARQUEE
+const marquee = document.getElementById('marquee');
+const clone = marquee.cloneNode(true);
+marquee.parentElement.appendChild(clone);
+
+// PROGRESS BARS ANIMATION
+const progressObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.progress-fill').forEach(fill => {
+        const width = fill.style.width;
+        fill.style.width = '0%';
+        setTimeout(() => { fill.style.width = width; }, 200);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.course-card').forEach(card => progressObserver.observe(card));
+
+// GLITCH TITLE EFFECT
+const h1 = document.querySelector('.hero h1');
+let glitchInterval;
+function startGlitch() {
+  const chars = '█▓▒░NEXUS0123456789ABCDEF';
+  const originalHTML = h1.innerHTML;
+  let count = 0;
+  glitchInterval = setInterval(() => {
+    if (count++ > 6) {
+      clearInterval(glitchInterval);
+      h1.innerHTML = originalHTML;
+      return;
+    }
+  }, 60);
+}
+setInterval(startGlitch, 5000);
+</script>
+</body>
+</html>
