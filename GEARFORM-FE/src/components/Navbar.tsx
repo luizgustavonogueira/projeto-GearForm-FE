@@ -9,6 +9,7 @@ const Navbar: React.FC = () => {
       </div>
 
       <ul className="nav-links">
+        <li><a href="#">Home</a></li>
         <li><a href="#">Cursos</a></li>
         <li><a href="#">Trilhas</a></li>
         <li><a href="#">Instrutores</a></li>
